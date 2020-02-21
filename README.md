@@ -12,12 +12,8 @@ BarsPyService.exe - сервис для печати
 <tr> <td>\host\dist\BarsPyService.exe</td><td>собранный сервис</td> </tr>
 </table>
 **управление:**
-
-	BarsPyService.exe install   - инсталяция сервиса
-	BarsPyService.exe start     - запуск сервиса
-	BarsPyService.exe stop      - остановить сервис
-	BarsPyService.exe remove    - удаление сервиса 
-
+   \host\dist\Install.bat - регистрация программы в автозагрузке
+    BarsPyServer.exe      - Запуск сервера в фоновом режиме  
 **Сборка сервиса:**
 <pre>
 cd host
@@ -46,7 +42,7 @@ http://localhost:51003/
     BarsPy.send({"GetPrinterList":1},function(dat){console.log(dat);}) // получить список принтеров установленных в системе
     BarsPy.send({"Print":"< h1>Привет Мир-HelloWorld</h1>","widthPage":300,"heightPage":100,"PrinterName":"Microsoft XPS Document Writer"},function(dat){console.log(dat);})
     BarsPy.send({"Print":"< h1>Привет Мир-HelloWorld</h1>"+Date(Date.now()).toString()}) // отправека на печать без получения ответа 
-	BarsPySend({"PrintUrl":"http://127.0.0.1/sprint.png" },function(dat){console.log(dat);}) // Отправка на печать страницы по URL адресу
+	BarsPy.send({"PrintUrl":"http://127.0.0.1/sprint.png" },function(dat){console.log(dat);}) // Отправка на печать страницы по URL адресу
 </pre>
 
 **Обратится к сервису из JS**
@@ -83,8 +79,10 @@ BarsPySend= function(messageObject,FunCallBack ){
 BarsPySend({"GetPrinterList":1},function(dat){console.log(dat);}) // получить список принтеров установленных в системе
 BarsPySend({"Print":"< h1>Привет Мир-HelloWorld</h1>","widthPage":300,"heightPage":100,"PrinterName":"Microsoft XPS Document Writer"},function(dat){console.log(dat);})
 BarsPySend({"Print":"< h1>Привет Мир-HelloWorld</h1>"}) // отправека на печать без получения ответа
+BarsPySend({"PrintUrl":"http://127.0.0.1/sprint.png" },function(dat){console.log(dat);}) // Отправка на печать страницы по URL адресу
 </pre>
 
+<h4>Python V3</h4>
 **Для сблрки необходимо использовать сторонние пакеты:**
 <pre>
 pip install Flask
