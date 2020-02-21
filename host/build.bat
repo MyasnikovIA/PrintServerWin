@@ -1,0 +1,1 @@
+pyinstaller --onefile  --noconsole --noupx --icon="app.ico" --hidden-import win32timezone BarsPyServer.py
