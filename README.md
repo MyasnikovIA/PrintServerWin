@@ -90,3 +90,9 @@ pip install Flask-cors
 pip install imgkit
 pip install pyinstaller
 </pre> 
+
+<h4>Python3.8 с установленными пакетами</h4>
+распоковать в C:\Program Files\Python38
+<pre> 
+https://yadi.sk/d/nYL9MjYO_oMsBA
+</pre> 
