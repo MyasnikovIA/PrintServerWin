@@ -18,7 +18,8 @@ widthPage = 300
 heightPage = 100
 printer_name = ""
 portServer = 51003
-version = '0.1'
+version = '0.2'
+defaultTempPath = ""
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -102,7 +103,7 @@ def print_image(img, printer_name):
     hdc.DeleteDC()
 
 
-def htmlurl_to_image(UrlPath="", printer_name="", widthPage=300, heightPage=100):
+def htmlurl_to_image(UrlPath="", printer_name="", defaultTempPath="", widthPage=300, heightPage=100):
     """
     Функция вывода HTML на принтер
     :param UrlPath: - адрес запроса
@@ -111,7 +112,7 @@ def htmlurl_to_image(UrlPath="", printer_name="", widthPage=300, heightPage=100)
     """
     requestMessage = {}
     try:
-        filename = mktemp(".png")
+        filename = mktemp(".png", "", defaultTempPath)
         from_url(UrlPath, filename, options={'width': widthPage, 'height': heightPage})
     except Exception:
         requestMessage["Error"] = "create temp file %s %s" % (filename, format_exc())
@@ -124,7 +125,7 @@ def htmlurl_to_image(UrlPath="", printer_name="", widthPage=300, heightPage=100)
     return requestMessage
 
 
-def html_to_image(StrPrintHtml="", printer_name="", widthPage=300, heightPage=100):
+def html_to_image(StrPrintHtml="", printer_name="", widthPage=300, heightPage=100, defaultDir=""):
     """
     Функция вывода текста на принтер
     :param StrPrintHtml: - Текст HTML
@@ -133,7 +134,7 @@ def html_to_image(StrPrintHtml="", printer_name="", widthPage=300, heightPage=10
     """
     requestMessage = {}
     try:
-        filename = mktemp(".png")
+        filename = mktemp(".png", "", defaultDir)
         from_string(
             """<!DOCTYPE html><html><head><meta charset="utf-8"><title>Печать</title></head><body>%s</body></html>""" % StrPrintHtml,
             filename, options={'width': widthPage, 'height': heightPage})
@@ -176,10 +177,13 @@ def requestFun():
     global printer_name
     global widthPage
     global heightPage
+    global defaultTempPath
     if request.host[:9] != "127.0.0.1":
         if request.host[:9] != "localhost":
             return "no service", 404
     requestMessage = parseHead()
+    if "TempPath" in requestMessage:
+        defaultTempPath = requestMessage.get("TempPath")
     if "WidthPage" in requestMessage:
         widthPage = requestMessage.get("WidthPage")
     if "HeightPage" in requestMessage:
@@ -187,10 +191,10 @@ def requestFun():
     if "PrinterName" in requestMessage:
         printer_name = requestMessage.get("PrinterName")
     if "Print" in requestMessage:
-        res = html_to_image(requestMessage["Print"], printer_name, widthPage, heightPage)
+        res = html_to_image(requestMessage["Print"], printer_name, widthPage, heightPage, defaultTempPath)
         return dumps(res), 200
     if "Printurl" in requestMessage:
-        res = htmlurl_to_image(requestMessage["Printurl"], printer_name)
+        res = htmlurl_to_image(requestMessage["Printurl"], printer_name, defaultTempPath)
         return dumps(res), 200
     if "Getprinterlist" in requestMessage:
         return dumps(get_print_list()), 200
